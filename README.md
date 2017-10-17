@@ -1,7 +1,12 @@
 # Engulf
 
-A multi-level puzzle game, originally written in
-[Scratch](https://en.wikipedia.org/wiki/Scratch_(programming_language)).
+Engulf is an original puzzle game featuring 56 unique levels.
+
+## HTML5 implementation (2017)
+
+Play it here:
+
+[https://helderman.github.io/engulf/html5/engulf.html](https://helderman.github.io/engulf/html5/engulf.html)
 
 ## Scratch implementation (2017)
 
