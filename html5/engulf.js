@@ -7,8 +7,8 @@
 	var ctx = canvas.getContext('2d');
 	var image_data;
 
-	var started = false;
-	canvas.onclick = function() { started = true; };
+	window.started = 0;
+	canvas.onclick = function() { window.started = 1; };
 
 	var level = 0;
 	var stage = null;
@@ -22,7 +22,8 @@
 		document.getElementById('sfx003')
 	];
 
-	var ball = {x:40, y:180, c:0, r:19};
+	var ball = {x:40, y:180, c:0, r:20};
+	var save = {};
 	var mouse = {x:ball.x, y:ball.y};
 
 	function collide(vx, vy) {
@@ -64,7 +65,7 @@
 	var warp_time;
 
 	var painter = function(time) {
-		if (started) {
+		if (window.started) {
 			document.getElementById('sfx007').play();
 			painter = paint_next_fadeout;
 			warp_time = time;
@@ -83,7 +84,17 @@
 			ctx.fillRect(x, 0, w, 360);
 		}
 		if (w >= 40) {
-			stage = document.getElementById('level' + ('0' + (level += dir)).slice(-2));
+			if (dir) {
+				save.level = level += save.dir = dir;
+				save.y = ball.y;
+				save.c = ball.c;
+			}
+			else {
+				level = save.level;
+				ball.y = save.y;
+				ball.c = save.c;
+			}
+			stage = document.getElementById('level' + ('0' + level).slice(-2));
 			painter = followup;
 		}
 	}
@@ -121,6 +132,14 @@
 
 	function paint_prev_fadein(time) {
 		paint_fadein(time, -1);
+	}
+
+	function paint_restart_fadeout(time) {
+		paint_fadeout(time, 0, paint_restart_fadein);
+	}
+
+	function paint_restart_fadein(time) {
+		paint_fadein(time, save.dir);
 	}
 
 	function move_ball(time) {
@@ -213,6 +232,12 @@
 		else if (ball.x > 470) {
 			document.getElementById(level & 1 ? 'sfx006' : 'sfx007').play();
 			painter = paint_next_fadeout;
+			warp_time = time;
+		}
+		else if (window.started > 1) {
+			window.started = 1;
+			document.getElementById(save.dir < 0 ? 'sfx013' : level & 1 ? 'sfx007' : 'sfx006').play();
+			painter = paint_restart_fadeout;
 			warp_time = time;
 		}
 	}
