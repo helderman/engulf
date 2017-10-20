@@ -9,6 +9,13 @@
 
 	window.started = 0;
 	canvas.onclick = function() { window.started = 1; };
+	var restart = function () { if (window.started) window.started = 2; }
+	document.getElementById('restart').onclick = restart;
+	document.addEventListener('keypress', function(event) {
+		if ((event.charCode | 32) == 114) {
+			restart();
+		}
+	});
 
 	var level = 0;
 	var stage = null;
