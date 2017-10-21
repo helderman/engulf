@@ -8,13 +8,15 @@
 	var image_data;
 
 	window.started = 0;
-	canvas.onclick = function() { window.started = 1; };
-	var restart = function () { if (window.started) window.started = 2; }
+	canvas.onclick = function() {
+		if (window.started == 0) { play_sound(0); window.started = 1; }
+	};
+	var restart = function () {
+		if (window.started) { window.started = 2; }
+	};
 	document.getElementById('restart').onclick = restart;
 	document.addEventListener('keypress', function(event) {
-		if ((event.charCode | 32) == 114) {
-			restart();
-		}
+		if ((event.charCode | 32) == 114) { restart(); }
 	});
 
 	var level = 0;
@@ -23,15 +25,22 @@
 	var colors = ['#FF0000', '#00FF00', '#0000FF'];
 	var sparks = [null, null, null];
 
-	var change = [
-		document.getElementById('sfx001'),
-		document.getElementById('sfx002'),
-		document.getElementById('sfx003')
-	];
-
 	var ball = {x:40, y:180, c:0, r:20};
 	var save = {};
 	var mouse = {x:ball.x, y:ball.y};
+
+	var audio = document.getElementById('audiosprites');
+	var end;
+	audio.addEventListener(
+		'timeupdate',
+		function() { if (audio.currentTime > end) audio.pause(); },
+		false);
+
+	function play_sound(i) {
+		audio.currentTime = 3 * i;
+		end = 3 * i + 2.2;
+		audio.play();
+	}
 
 	function collide(vx, vy) {
 		var result = 1;
@@ -73,7 +82,6 @@
 
 	var painter = function(time) {
 		if (window.started) {
-			document.getElementById('sfx007').play();
 			painter = paint_next_fadeout;
 			warp_time = time;
 		}
@@ -172,7 +180,7 @@
 		ball.y += vy;
 		if (c == 5) {
 			ball.c = (ball.c + 1) % 3;
-			change[ball.c].play();
+			play_sound(ball.c + 3);
 			sparks[ball.c] = {x:ball.x, y:ball.y, c:ball.c, t:time};
 		}
 	}
@@ -232,18 +240,18 @@
 		paint_ball();
 		paint_sparks(time);
 		if (ball.x < 10) {
-			document.getElementById('sfx013').play();
+			play_sound(2);
 			painter = paint_prev_fadeout;
 			warp_time = time;
 		}
 		else if (ball.x > 470) {
-			document.getElementById(level & 1 ? 'sfx006' : 'sfx007').play();
+			play_sound(level & 1);
 			painter = paint_next_fadeout;
 			warp_time = time;
 		}
 		else if (window.started > 1) {
 			window.started = 1;
-			document.getElementById(save.dir < 0 ? 'sfx013' : level & 1 ? 'sfx007' : 'sfx006').play();
+			play_sound(save.dir < 0 ? 2 : ~level & 1);
 			painter = paint_restart_fadeout;
 			warp_time = time;
 		}
