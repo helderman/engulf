@@ -1,9 +1,23 @@
 body {
 	color: white;
-	background-color: black;
+	background-color: #036;
 	font-family: serif;
+}
+
+h2, p {
+	text-align: center;
 }
 
 #game {
 	background-image: url(rgbcubism.png);
+}
+
+.levels {
+	font-size: 0;
+}
+
+.levels > img {
+	width: 5%;
+	height: 5%;
+	opacity: 0.1;
 }
