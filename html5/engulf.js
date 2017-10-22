@@ -218,8 +218,7 @@
 					ctx.lineWidth = 6;
 					ctx.strokeStyle = colors[c];
 					for (var i = 0; i < 24; i++) {
-						rnd *= 1.13;
-						rnd += 1.2 - Math.trunc(rnd);
+						rnd = rnd * 1.13 % 1 + 1.2;
 						r = 10 + t * rnd;
 						paint_spark(obj, x * r, y * r);
 						r = x * cos - y * sin;
