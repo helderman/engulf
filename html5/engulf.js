@@ -95,7 +95,7 @@
 		}
 		var w = (time - warp_time) / 8;
 		ctx.fillStyle = 'black';
-		for (var x = dir < 0 ? 0 : 40 - w; x < 480; x += 40) {
+		for (var x = (dir || -save.dir) < 0 ? 0 : 40 - w; x < 480; x += 40) {
 			ctx.fillRect(x, 0, w, 360);
 		}
 		if (w >= 40) {
