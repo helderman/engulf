@@ -109,6 +109,7 @@
 				ball.y = save.y;
 				ball.c = save.c;
 			}
+			document.getElementById('description').innerHTML = 'Level ' + level;
 			stage = document.getElementById('level' + ('0' + level).slice(-2));
 			stage.style.opacity = 1;
 			painter = followup;
