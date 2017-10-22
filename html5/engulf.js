@@ -3,7 +3,6 @@
 	var sin = Math.sin(Math.PI / 12);
 
 	var canvas = document.getElementById('game');
-	var offset = canvas.getBoundingClientRect();
 	var ctx = canvas.getContext('2d');
 	var image_data;
 
@@ -18,6 +17,12 @@
 	document.addEventListener('keypress', function(event) {
 		if ((event.charCode | 32) == 114) { restart(); }
 	});
+
+	document.onmousemove = function(event) {
+		mouse.x = event.pageX - canvas.offsetLeft;
+		mouse.y = event.pageY - canvas.offsetTop;
+		return false;
+	};
 
 	var level = 0;
 	var stage = null;
@@ -72,11 +77,6 @@
 		}
 		return result;
 	}
-
-	document.onmousemove = function(e) {
-		mouse.x = e.clientX - offset.left;
-		mouse.y = e.clientY - offset.top;
-	};
 
 	var warp_time;
 
