@@ -127,8 +127,8 @@
 				ball.y = save.y;
 				ball.c = save.c;
 			}
-			document.getElementById('description').innerHTML = 'Level ' + save.level;
 			stage = get_stage(save.level);
+			document.getElementById('description').innerHTML = stage.title;
 			painter = followup;
 		}
 	}
