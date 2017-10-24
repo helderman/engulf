@@ -24,14 +24,13 @@
 		return false;
 	};
 
-	var level = 0;
 	var stage = null;
 
 	var colors = ['#FF0000', '#00FF00', '#0000FF'];
 	var sparks = [null, null, null];
 
 	var ball = {x:40, y:180, c:0, r:20};
-	var save = {};
+	var save = {level:0, unlocked:0};
 	var mouse = {x:ball.x, y:ball.y};
 
 	var audio = document.getElementById('audiosprites');
@@ -45,6 +44,12 @@
 		audio.currentTime = 3 * i;
 		end = 3 * i + 2.2;
 		audio.play();
+	}
+
+	function get_stage(i) {
+		var s = document.getElementById('level' + ('0' + i).slice(-2));
+		if (s) s.style.opacity = 1;
+		return s;
 	}
 
 	function collide(vx, vy) {
@@ -82,7 +87,17 @@
 
 	var painter = function(time) {
 		if (window.started) {
-			painter = paint_next_fadeout;
+			var json = window.localStorage.getItem('engulf');
+			if (json) {
+				save = JSON.parse(json);
+				for (var i = 1; i <= save.unlocked; i++) {
+					get_stage(i);
+				}
+				painter = paint_restart_fadeout;
+			}
+			else {
+				painter = paint_next_fadeout;
+			}
 			warp_time = time;
 		}
 	};
@@ -100,18 +115,20 @@
 		}
 		if (w >= 40) {
 			if (dir) {
-				save.level = level += save.dir = dir;
 				save.y = ball.y;
 				save.c = ball.c;
+				save.level += save.dir = dir;
+				if (save.unlocked < save.level) {
+					save.unlocked = save.level;
+				}
+				localStorage.setItem('engulf', JSON.stringify(save));
 			}
 			else {
-				level = save.level;
 				ball.y = save.y;
 				ball.c = save.c;
 			}
-			document.getElementById('description').innerHTML = 'Level ' + level;
-			stage = document.getElementById('level' + ('0' + level).slice(-2));
-			stage.style.opacity = 1;
+			document.getElementById('description').innerHTML = 'Level ' + save.level;
+			stage = get_stage(save.level);
 			painter = followup;
 		}
 	}
@@ -246,13 +263,13 @@
 			warp_time = time;
 		}
 		else if (ball.x > 470) {
-			play_sound(level & 1);
+			play_sound(save.level & 1);
 			painter = paint_next_fadeout;
 			warp_time = time;
 		}
 		else if (window.started > 1) {
 			window.started = 1;
-			play_sound(save.dir < 0 ? 2 : ~level & 1);
+			play_sound(save.dir < 0 ? 2 : ~save.level & 1);
 			painter = paint_restart_fadeout;
 			warp_time = time;
 		}
