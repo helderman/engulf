@@ -18,6 +18,13 @@
 		if ((event.charCode | 32) == 114) { restart(); }
 	});
 
+	document.getElementById('reset').onclick = function() {
+		if (confirm('This will clear the saved game state. Are you sure?')) {
+			window.localStorage.removeItem('engulf');
+			window.location.reload();
+		}
+	};
+
 	document.onmousemove = function(event) {
 		mouse.x = event.pageX - canvas.offsetLeft;
 		mouse.y = event.pageY - canvas.offsetTop;
