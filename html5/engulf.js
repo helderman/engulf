@@ -25,12 +25,6 @@
 		}
 	};
 
-	document.onmousemove = function(event) {
-		mouse.x = event.pageX - canvas.offsetLeft;
-		mouse.y = event.pageY - canvas.offsetTop;
-		return false;
-	};
-
 	var stage = null;
 
 	var colors = ['#FF0000', '#00FF00', '#0000FF'];
@@ -52,6 +46,22 @@
 		end = 3 * i + 2.2;
 		audio.play();
 	}
+
+	function handle_mousemove(e) {
+		if (e) {
+			mouse.x = e.pageX - canvas.offsetLeft;
+			mouse.y = e.pageY - canvas.offsetTop;
+		}
+		return false;
+	}
+
+	function handle_touchmove(e) {
+		e.preventDefault();
+		return handle_mousemove(e.changedTouches[0]);
+	}
+
+	document.onmousemove = handle_mousemove;
+	canvas.addEventListener("touchmove", handle_touchmove, false);
 
 	function get_stage(i) {
 		var s = document.getElementById('level' + ('0' + i).slice(-2));
@@ -153,7 +163,8 @@
 		}
 		else {
 			image_data = ctx.getImageData(0, 0, 480, 360).data;
-			ball.x = 240 - 200 * dir;
+			mouse.x = ball.x = 240 - 200 * dir;
+			mouse.y = ball.y;
 			paint_ball();
 			painter = paint_game;
 		}
